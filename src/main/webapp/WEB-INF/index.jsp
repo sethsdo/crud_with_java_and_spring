@@ -17,11 +17,10 @@
 		<div class="container">
 			<h1>Crud Assignment</h1>
 			<table class="table">
-				<c:set var="index" value="0" />
-				<c:forEach items="${languages}" var="language" varStatus="index">
+				<c:forEach items="${languages}" var="language">
 					<tr>
 						<td>
-							<a href="/language/${index.index}"><c:out value="${language.name}" /></a>
+							<a href="/language/${language.id}"><c:out value="${language.name}" /></a>
 						</td>
 						<td>
 							<c:out value="${language.creator}" />
@@ -30,8 +29,8 @@
 							<c:out value="${language.version}" />
 						</td>
 						<td>
-							<a href="/language/delete/${index.index}">delete</a> |
-							<a href="/language/edit/${index.index}">edit </a>
+							<a href="/language/delete/${language.id}">delete</a> |
+							<a href="/language/edit/${language.id}">edit </a>
 						</td>
 					</tr>
 				</c:forEach>
@@ -41,6 +40,7 @@
 			
 			<form:form method="POST" action="/language/new" modelAttribute="language">
 				<form:label path="name">Name
+					<form:hidden path="id" />
 					<form:errors path="name" />
 					<form:input path="name" /></form:label>
 			

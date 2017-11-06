@@ -29,8 +29,8 @@
 
 			<hr>
 
-			<a href="/language/delete/${index}">Delete ${param.id}</a>
-			<a href="/language/edit/${index}">Edit</a>
+			<a href="/language/delete/${language.id}">Delete ${language.id}</a>
+			<a href="/language/edit/${language.id}">Edit</a>
 		</div>
 	</body>
 </html>

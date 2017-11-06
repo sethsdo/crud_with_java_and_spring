@@ -24,32 +24,37 @@ public class RouteController {
     //SHOW ALL
     @RequestMapping("/")
     public String index(Model model, @ModelAttribute("language") Language language){
-        index = 0;
-        List<Language> languages = languageService.allLangauges();
+        List<Language> languages = languageService.allLanguages();
         model.addAttribute("languages", languages);
-        model.addAttribute("index", index);
         System.out.println(languages);
         return "index";
     }
 
     //SHOW ONE
-    @RequestMapping("language/{index}")
-    public String fndLanguageIndex(Model model, @PathVariable("index") int index) {
-        System.out.println("find");
-        System.out.println(index);
-        Language language = languageService.findLanguageByIndex(index);
-        model.addAttribute("language", language);
-        model.addAttribute("index", index);
+
+    @RequestMapping("/language/{index}")
+    public String findLanguageByIndex(@PathVariable("index") Long index, Model model) {
+        model.addAttribute("language", languageService.findLanguageById(index));
         return "showLanguage";
     }
 
+    // @RequestMapping("language/{index}")
+    // public String fndLanguageIndex(Model model, @PathVariable("index") int index) {
+    //     System.out.println("find");
+    //     System.out.println(index);
+    //     Language language = languageService.findLanguageByIndex(index);
+    //     model.addAttribute("language", language);
+    //     model.addAttribute("index", index);
+    //     return "showLanguage";
+    // }
+
     //CREATE
     @PostMapping("/language/new")
-    public String createBook(@Valid @ModelAttribute("language") Language language, BindingResult result, @RequestParam(value="name") String name, @RequestParam(value="creator") String creator, @RequestParam(value="version") String version) {
+    public String createBook(@Valid @ModelAttribute("language") Language language, BindingResult result, @RequestParam(value="name") String name, @RequestParam(value="creator") String creator, @RequestParam(value="version") String version, @RequestParam(value = "id") Long id) {
         if (result.hasErrors()) {
-            return "index";
+            return "form";
         } else {
-            Language newlang = new Language(name, creator, version);
+            Language newlang = new Language(name, creator, version, id);
             System.out.println(newlang);
             languageService.addLanguage(newlang);
             return "redirect:/";
@@ -59,12 +64,10 @@ public class RouteController {
     
     //EDIT
     @RequestMapping("/language/edit/{id}")
-    public String editLanguage(@PathVariable("id") int id, Model model) {
-        System.out.println(id);
-        Language language = languageService.findLanguageByIndex(id);
+    public String editLanguage(@PathVariable("id") Long id, Model model) {
+        Language language = languageService.findLanguageById(id);
         if (language != null) {
             model.addAttribute("language", language);
-            model.addAttribute("id", id);
             return "editLanguage";
         } else {
             return "redirect:/";
@@ -72,22 +75,52 @@ public class RouteController {
     }
 
     @PostMapping("/languages/edit/{id}")
-    public String updateLanguage(@PathVariable("id") int id, @Valid @ModelAttribute("language") Language language,
-            BindingResult result, @RequestParam(value="name") String name, @RequestParam(value="creator") String creator, @RequestParam(value="version") String version) {
+    public String updateLanguage(@Valid @ModelAttribute("language") Language language, BindingResult result,
+            @PathVariable("id") Long id) {
         if (result.hasErrors()) {
             return "editLanguage.jsp";
         } else {
-            Language newlang = new Language(name, creator, version);
-            languageService.updateLanguage(id, newlang);
+            languageService.updateLanguage(language);
             return "redirect:/";
         }
     }
 
+    // @RequestMapping("/language/edit/{id}")
+    // public String editLanguage(@PathVariable("id") int id, Model model) {
+    //     System.out.println(id);
+    //     Language language = languageService.findLanguageByIndex(id);
+    //     if (language != null) {
+    //         model.addAttribute("language", language);
+    //         model.addAttribute("id", id);
+    //         return "editLanguage";
+    //     } else {
+    //         return "redirect:/";
+    //     }
+    // }
+
+    // @PostMapping("/languages/edit/{id}")
+    // public String updateLanguage(@PathVariable("id") int id, @Valid @ModelAttribute("language") Language language,
+    //         BindingResult result, @RequestParam(value="name") String name, @RequestParam(value="creator") String creator, @RequestParam(value="version") String version) {
+    //     if (result.hasErrors()) {
+    //         return "editLanguage.jsp";
+    //     } else {
+    //         Language newlang = new Language(name, creator, version);
+    //         languageService.updateLanguage(id, newlang);
+    //         return "redirect:/";
+    //     }
+    // }
+
     //DELETE
     @RequestMapping(value = "/language/delete/{id}")
-    public String destroyBook(@PathVariable("id") int id) {
+    public String destroyLanguage(@PathVariable("id") Long id) {
         languageService.destroyLanguage(id);
         return "redirect:/";
     }
+
+    // @RequestMapping(value = "/language/delete/{id}")
+    // public String destroyBook(@PathVariable("id") int id) {
+    //     languageService.destroyLanguage(id);
+    //     return "redirect:/";
+    // }
 
 }
